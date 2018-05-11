@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.AgentDealMapper" >
+  
+  <!-- 代理商列表 -->
+  <select id="findAllAgentDeal" parameterType="string" resultType="com.game.business.model.AgentDeal">
+  	SELECT
+  		agentDealID,dealHour,remitterAccount,payeeAccount,dealType,remitterRoomCard,
+  		payeeRoomCard,operateIP,sellNumber,sellMoney,sellReason
+  	FROM
+  		agentdealrecords
+  	
+  	<if test="account != null">
+  	WHERE
+  		remitterAccount = #{account}
+  	</if>
+  	ORDER BY dealHour desc
+  </select>
+  <!-- 保存交易记录信息 -->
+  <insert id="insertAgentDealRecord" parameterType="map">
+  	INSERT INTO agentdealrecords(
+  		dealHour,remitterAccount,payeeAccount,dealType,remitterRoomCard,
+  		payeeRoomCard,operateIP,sellNumber,sellMoney,sellReason
+  	)VALUES(
+  		#{dealHour},#{remitterAccount},#{payeeAccount},#{dealType},#{remitterRoomCard},
+  		#{payeeRoomCard},#{operateIP},#{sellNumber},#{sellMoney},#{sellReason}
+  	)
+  </insert>
+  <!-- 代理交易记录查询，根据条件查出信息 -->
+  <select id="findAllAgentDealByCondition" parameterType="map" resultType="com.game.business.model.AgentDeal">
+  	SELECT
+  		dealHour,remitterAccount,payeeAccount,dealType,remitterRoomCard,
+  		payeeRoomCard,operateIP,sellNumber,sellMoney,sellReason
+  	FROM
+  		agentdealrecords
+  	<where>
+	  	<if test="remitterAccount != null and remitterAccount !='' ">
+	  		and remitterAccount = #{remitterAccount}
+	  	</if>
+	  	<if test="payeeAccount != null and payeeAccount !='' ">
+	  		and payeeAccount = #{payeeAccount}
+	  	</if>
+	  	<if test="startDate != null and startDate !='' ">
+	  		and dealHour&gt;= #{startDate}
+	  	</if>
+	  	<if test="endDate != null and endDate !='' ">
+	  		and dealHour&lt;= #{endDate}
+	  	</if>
+  	</where>
+  	ORDER BY dealHour desc
+  </select>
+  
+  <!-- 添加交易记录 -->
+  <insert id="insertAgentDeal" parameterType="com.game.business.model.AgentDeal">
+  	INSERT INTO agentdealrecords(
+  		dealHour,remitterAccount,payeeAccount,dealType,remitterRoomCard,
+  		payeeRoomCard,operateIP,sellNumber,sellMoney,sellReason
+  	)VALUES(
+  		CURRENT_TIMESTAMP,#{remitterAccount},#{payeeAccount},#{dealType},#{remitterRoomCard},
+  		#{payeeRoomCard},#{operateIP},#{sellNumber},#{sellMoney},#{sellReason}
+  	)
+  </insert>
+  
+  
+</mapper>

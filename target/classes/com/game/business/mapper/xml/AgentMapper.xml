@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.AgentMapper" >
+  
+  <!-- 代理商列表 -->
+  <select id="findAllAgentMessage" resultType="com.game.business.model.Agent">
+  	SELECT
+  		userID,account,roomCard,higherAgent,lowerAgentNum,lowerPlayerNum,documentType,
+  		documentNumber,bankName,bankCardNumber,realName,cellPhoneNumber,
+  		email,regTime,loginNumber,lastLoginIP,lastLoginTime,state,category,password
+  	FROM
+  		agentmanagement
+  </select>
+  <!-- 根据用户名查找对应代理 -->
+  <select id="findAgentByName" parameterType="string" resultType="com.game.business.model.Agent">
+  	SELECT
+  		userID,account,roomCard,higherAgent,lowerAgentNum,lowerPlayerNum,documentType,
+  		documentNumber,bankName,bankCardNumber,realName,cellPhoneNumber,
+  		email,regTime,loginNumber,lastLoginIP,lastLoginTime,state,category,password
+  	FROM
+  		agentmanagement
+  	WHERE
+  		account = #{admin}
+  </select>
+  <!-- 根据级别查询所有代理 -->
+  <select id="findAllStairAgent" parameterType="map" resultType="com.game.business.model.Agent">
+  	SELECT
+  		userID,account,roomCard,higherAgent,lowerAgentNum,lowerPlayerNum,documentType,
+  		documentNumber,bankName,bankCardNumber,realName,cellPhoneNumber,
+  		email,regTime,loginNumber,lastLoginIP,lastLoginTime,state,category,password
+  	FROM
+  		agentmanagement
+  	WHERE
+  		<trim prefixOverrides="and">
+  			<if test="higherAgent != null">
+  				higherAgent = #{higherAgent}
+  			</if>
+  			<if test="mark != null">
+  				and mark = #{mark}
+  			</if>
+  		</trim>
+  </select>
+  
+  <!-- 根据新信息修改代理商信息 -->
+  <update id="operatinAgent" parameterType="map">
+  	UPDATE
+  		agentmanagement
+  	SET
+  		documentType=#{documentType},documentNumber=#{documentNumber},
+  		bankName=#{bankName},bankCardNumber=#{bankCardNumber},
+  		realName=#{realName},cellPhoneNumber=#{cellPhoneNumber},password=#{password}
+  		email=#{email},state=#{state}
+  	WHERE
+  		userID=#{userID}
+  </update>
+  <update id="updateLowerPlayerNum" parameterType="Integer">
+  	UPDATE
+  		agentmanagement
+  	SET
+  		lowerPlayerNum=#{lowerPlayerNum}
+  	WHERE
+  		userID=#{userID}
+  </update>
+  <!-- 根据用户名删除代理用户 -->
+  <delete id="deleteAgent" parameterType="com.game.business.model.Agent">
+  	DELETE FROM agentmanagement WHERE account = #{account};
+  </delete>
+  <!-- 根据用户名删除代理用户以后修改其次级代理的上级代理 -->
+  <update id="updateSecondaryAgent" parameterType="string">
+  	UPDATE agentmanagement SET higherAgent=#{recycleagent} WHERE higherAgent=#{account};
+  </update>
+  <!-- 当前用户的所有次级代理 -->
+  <select id="countTotalByAccount" parameterType="string" resultType="int">
+  	SELECT
+  		count(*)
+  	FROM
+  		agentmanagement
+  	WHERE
+  		higherAgent=#{account}
+  </select>
+  
+  <!-- 修改最后登录时间,ip和登录次数 -->
+  <update id="updateByName" parameterType="com.game.business.model.Agent">
+  	UPDATE agentmanagement SET lastLoginTime=CURRENT_TIMESTAMP,lastLoginIP=#{lastLoginIP},loginNumber=#{loginNumber},roomCard=#{roomCard},state=#{state} WHERE account=#{account}
+  </update>
+  
+  
+  
+  <!-- 增加代理 -->
+  <insert id="addAgent" parameterType="Map">
+  	INSERT INTO agentmanagement(
+  		account,roomCard,higherAgent,lowerAgentNum,lowerPlayerNum,documentType,
+  		documentNumber,bankName,bankCardNumber,realName,cellPhoneNumber,
+  		email,regTime,loginNumber,state,category,password
+  	)VALUES(
+  		#{account},#{roomCard},#{higherAgent},#{lowerAgentNum},#{lowerPlayerNum},
+  		#{documentType},#{documentNumber},#{bankName},#{bankCardNumber},#{realName},
+  		#{cellPhoneNumber},#{email},#{regTime},
+  		#{loginNumber},#{state},#{category},#{password}
+  	)
+  </insert>
+  
+  
+  
+  <!-- 修改下级代理数量 -->
+  <update id="updateLowAgentNumByAccount">
+  	UPDATE
+  		agentmanagement
+  	SET
+  		lowerAgentNum=#{1}
+  	WHERE
+  		account=#{0}
+  </update>
+  <!-- 修改房卡 -->
+  <update id="updateRoomCardByAgent" parameterType="com.game.business.model.Agent">
+  	UPDATE
+  		agentmanagement
+  	SET
+  		roomCard=#{roomCard}
+  	WHERE
+  		account=#{account}
+  </update>
+  <!-- 查询所有代理日志 -->
+  <select id="findAllAgentLog" parameterType="map" resultType="com.game.business.model.AgentLog">
+  	SELECT 
+  		id,name,ip,system,time,dsc,status 
+  	FROM 
+  		agentlog
+  	<where>
+  		<if test="startDate!=null and startDate !=''">
+  			and time&gt;=#{startDate}
+  		</if>
+  		<if test="endDate!=null and endDate !=''">
+  			and time&lt;=#{endDate}
+  		</if>
+  	</where>
+  	ORDER BY time desc
+  </select>
+  <!-- 根据日期删除代理日志 -->
+  <delete id="deleteAgentLogByDate" parameterType="map">
+  	delete from
+  		agentlog
+  	where
+  		time between #{startDate} and #{endDate}
+  </delete>
+  
+  <!-- 根据代理商id查询代理商信息 -->
+  <select id="findAgentById"  parameterType="int" resultType="com.game.business.model.Agent">
+  	SELECT userID,account,roomCard,higherAgent,lowerAgentNum,lowerPlayerNum,documentType,
+  	documentNumber,bankName,bankCardNumber,realName,cellPhoneNumber,email,regTime,loginNumber,
+  	lastLoginIP,lastLoginTime,state,category,password FROM agentmanagement WHERE userID = #{userID}
+  </select>
+  <!-- 代理商列表 -->
+  <select id="findAllAgent" resultType="com.game.business.model.Agent">
+  	SELECT
+  		userID,account,roomCard,higherAgent,lowerAgentNum,lowerPlayerNum,documentType,
+  		documentNumber,bankName,bankCardNumber,realName,cellPhoneNumber,
+  		email,regTime,loginNumber,lastLoginIP,lastLoginTime,state,category,password
+  	FROM
+  		agentmanagement order by userID desc
+  </select>
+  
+  <!-- 代理商列表 -->
+  <select id="findManyAgentByName" resultType="com.game.business.model.Agent" parameterType="String">
+  	SELECT
+  		userID,account,roomCard,higherAgent,lowerAgentNum,lowerPlayerNum,documentType,
+  		documentNumber,bankName,bankCardNumber,realName,cellPhoneNumber,
+  		email,regTime,loginNumber,lastLoginIP,lastLoginTime,state,category,password
+  	FROM
+  		agentmanagement 
+  	WHERE 
+  		higherAgent = #{name} order by userID desc
+  </select>
+  
+  <!-- 根据id修改代理商信息 -->
+  <update id="alertAgentById" parameterType="com.game.business.model.Agent">
+  	UPDATE
+  		agentmanagement
+  	SET
+  		documentType=#{documentType},documentNumber=#{documentNumber},
+  		bankName=#{bankName},bankCardNumber=#{bankCardNumber},
+  		realName=#{realName},cellPhoneNumber=#{cellPhoneNumber},
+  		email=#{email},state=#{state},lowerAgentNum=#{lowerAgentNum},password=#{password}
+  	WHERE
+  		userID=#{userID}
+  </update>
+  
+  <!-- 增加代理 -->
+  <insert id="saveAgent" parameterType="com.game.business.model.Agent">
+  	INSERT INTO agentmanagement(
+  		account,roomCard,higherAgent,lowerAgentNum,lowerPlayerNum,documentType,
+  		documentNumber,bankName,bankCardNumber,realName,cellPhoneNumber,
+  		email,lastLoginIP,loginNumber,state,category,password
+  	)VALUES(
+  		#{account},#{roomCard},#{higherAgent},#{lowerAgentNum},#{lowerPlayerNum},
+  		#{documentType},#{documentNumber},#{bankName},#{bankCardNumber},#{realName},
+  		#{cellPhoneNumber},#{email},#{lastLoginIP},
+  		#{loginNumber},#{state},#{category},#{password}
+  	)
+  </insert>
+  
+</mapper>
+
+
+
+
+
+
+
+

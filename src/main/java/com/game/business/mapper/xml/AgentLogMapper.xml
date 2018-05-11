@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.AgentLogMapper" >
+  
+  <!-- 增加理商日志信息 -->
+  <insert id="agentLogSave" parameterType="com.game.business.model.AgentLog">
+  	INSERT INTO agentlog(
+  		name,ip,system,time,status,dsc
+  		) 
+  		VALUES
+  		(
+  		#{name},#{ip},#{system},#{time},#{status},#{dsc}
+  		)
+  </insert>
+  <!-- 查询代理商日志信息 -->
+  <select id="findAgentLogAllSelect" resultType="com.game.business.model.AgentLog">
+  	SELECT id,name,ip,system,time,status,dsc FROM agentlog order by time desc
+  </select>
+  
+</mapper>

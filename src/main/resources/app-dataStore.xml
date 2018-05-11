@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+							http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+							http://www.springframework.org/schema/context 
+							http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+							http://www.springframework.org/schema/aop  
+							http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  
+							http://www.springframework.org/schema/tx  
+							http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+							http://www.springframework.org/schema/mvc 
+							http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	
+	<!-- MyConfig -->
+	<bean id="config" class="com.game.base.util.MyConfig">
+		<property name="loginRMIUrl" value="${loginRMIUrl}" />
+		<property name="gameRMIUrl" value="${gameRMIUrl}" />
+	</bean>
+	
+	<!-- <tx:annotation-driven />-->
+	<!-- 数据仓库数据源 -->
+	<bean id="dataSource_Store" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 配置数据库连接基本信息 -->
+		<property name="url" value="${jdbc.databaseurl}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="maxActive" value="${jdbc.maxPoolSize}" />
+		<property name="initialSize" value="${jdbc.initialSize}" />
+		<property name="minIdle" value="${jdbc.minIdle}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="3000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小,mysql 不使用 -->
+		<property name="poolPreparedStatements" value="false" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="stat,log4j" />
+		<!-- 慢查询sql打印 -->
+		<property name="connectionProperties" value="druid.stat.slowSqlMillis=1000" />
+	</bean>
+	
+	<!-- 事务 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource_Store" />
+	</bean>
+	<!-- 会话工厂-->
+	<bean id="sqlSessionFactory_store" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource_Store" />
+		<property name="mapperLocations" value="classpath:com/game/business/mapper/xml/*Mapper.xml" />
+	</bean> 
+	<!-- 注册Mapper(自动扫描) -->
+	<bean id="mapperScannerConfigurer_store" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_store"></property> 
+		<property name="basePackage" value="com.game.business.mapper" />
+	</bean>
+	
+	
+	<!-- 第二个数据源 -->
+	<!--  游戏数据库  -->
+	<bean id="dataSource_game" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 配置数据库连接基本信息 -->
+		<property name="url" value="${gamejdbc.databaseurl}" />
+		<property name="username" value="${gamejdbc.username}" />
+		<property name="password" value="${gamejdbc.password}" />
+		<property name="driverClassName" value="${gamejdbc.driver}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="maxActive" value="${gamejdbc.maxPoolSize}" />
+		<property name="initialSize" value="${gamejdbc.initialSize}" />
+		<property name="minIdle" value="${gamejdbc.minIdle}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="3000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小,mysql 不使用 -->
+		<property name="poolPreparedStatements" value="false" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="stat,log4j" />
+		<!-- 慢查询sql打印 -->
+		<property name="connectionProperties" value="druid.stat.sloSqlMillis=1000" />
+	</bean>
+	<!-- 事务 -->
+	<bean id="transactionManager_game" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource_game" />
+	</bean>
+	<!-- 会话工厂-->
+	<bean id="sqlSessionFactory_game" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource_game" />
+		<property name="mapperLocations" value="classpath:com/game/game/mapper/xml/*Mapper.xml" />
+	</bean> 
+	<!-- 注册Mapper(自动扫描) -->
+	<bean id="mapperScannerConfigurer_game" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_game"></property> 
+		<property name="basePackage" value="com.game.game.mapper" />
+	</bean>
+	
+	<!-- 第三个数据源 -->
+	<!-- 游戏数据库 -->
+	<bean id="dataSource_gamehall" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 配置数据库连接基本信息 -->
+		<property name="url" value="${gamehalljdbc.databaseurl}" />
+		<property name="username" value="${gamehalljdbc.username}" />
+		<property name="password" value="${gamehalljdbc.password}" />
+		<property name="driverClassName" value="${gamehalljdbc.driver}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="maxActive" value="${gamehalljdbc.maxPoolSize}" />
+		<property name="initialSize" value="${gamehalljdbc.initialSize}" />
+		<property name="minIdle" value="${gamehalljdbc.minIdle}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="3000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小,mysql 不使用 -->
+		<property name="poolPreparedStatements" value="false" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="stat,log4j" />
+		<!-- 慢查询sql打印 -->
+		<property name="connectionProperties" value="druid.stat.sloSqlMillis=1000" />
+	</bean>
+	<!-- 事务 -->
+	<bean id="transactionManager_gamehall"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource_gamehall" />
+	</bean>
+	<!-- 会话工厂 -->
+	<bean id="sqlSessionFactory_gamehall" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource_gamehall" />
+		<property name="mapperLocations"
+			value="classpath:com/game/game/hallMapper/xml/*Mapper.xml" />
+	</bean>
+	<!-- 注册Mapper(自动扫描) -->
+	<bean id="mapperScannerConfigurer_gamehall" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_gamehall"></property>
+		<property name="basePackage" value="com.game.game.hallMapper" />
+	</bean>
+
+</beans> 

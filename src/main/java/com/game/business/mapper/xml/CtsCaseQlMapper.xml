@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.CtsCaseQlMapper" >
+  <resultMap id="BaseResultMap" type="com.game.business.model.CtsCaseQl" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="SOURCE_TYPE" property="sourceType" jdbcType="VARCHAR" />
+    <result column="INCIDENT_DATE" property="incidentDate" jdbcType="TIMESTAMP" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="POS_NO" property="posNo" jdbcType="VARCHAR" />
+    <result column="POS_NAME" property="posName" jdbcType="VARCHAR" />
+    <result column="LOAN_NO" property="loanNo" jdbcType="VARCHAR" />
+    <result column="TAR_NAME" property="tarName" jdbcType="VARCHAR" />
+    <result column="TAR_NO" property="tarNO" jdbcType="VARCHAR" />
+    <result column="TAR_ORG" property="tarOrg" jdbcType="VARCHAR" />
+    <result column="TAR_POST" property="tarPost" jdbcType="VARCHAR" />
+    <result column="TAR_PHONE" property="tarPhone" jdbcType="VARCHAR" />
+    <result column="DEAL_STAFF_NO" property="dealStaffNo" jdbcType="VARCHAR" />
+    <result column="DEAL_STAT" property="dealStat" jdbcType="VARCHAR" />
+    <result column="DEAL_DATE" property="dealDate" jdbcType="TIMESTAMP" />
+    <result column="INST_DATE" property="instDate" jdbcType="TIMESTAMP" />
+    <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+    <result column="CUST_CARD" property="custCard" jdbcType="VARCHAR" />
+    <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
+    <result column="CASE_DESC" property="caseDesc" jdbcType="VARCHAR"/>
+    <result column="ARCH_NOTE" property="archNote" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="AllColumnsSql" >
+    ID,SOURCE_TYPE,INCIDENT_DATE,CITY,POS_NO,POS_NAME,LOAN_NO,TAR_NAME,TAR_NO,TAR_ORG,TAR_POST,TAR_PHONE,DEAL_STAFF_NO,DEAL_STAT,DEAL_DATE,INST_DATE,CUST_NAME,CUST_CARD,CUST_TEL,CASE_DESC,ARCH_NOTE
+  </sql>
+	<!-- 通用更新列-->
+	<sql id="Base_Update_Column_List">
+		 #{id}, #{sourceType}, #{incidentDate}, #{city}, #{posNo},#{posName},#{loanNo}, #{tarName}, #{tarNO}, #{tarOrg}, #{tarPost}, #{tarPhone}, #{dealStaffNo}, #{dealStat}, #{dealDate}, #{instDate}, #{custName}, #{custCard}, #{custTel}, #{caseDesc}, #{archNote}
+	</sql>
+  
+  <insert id="addCtsCaseQl">
+  	INSERT INTO cts_case_ql(<include refid="AllColumnsSql"/>) VALUES(<include refid="Base_Update_Column_List"/>);
+  </insert>
+  <select id="getCtsCaseQl" resultMap="BaseResultMap">
+  	SELECT <include refid="AllColumnsSql" /> FROM cts_case_ql WHERE 1=1 
+  	<if test="dealStat !=null ">
+  		 AND DEAL_STAT=#{dealStat};
+  	</if>
+  </select>
+  
+  <select id="findByName" 
+		parameterType="String" 
+		resultType="com.game.business.model.Admin">
+			select * from employee
+			where name=#{name}
+  </select>
+  
+ 
+  <insert id="save" parameterType="com.game.business.model.Admin">
+		insert into employee
+			(address,email,
+			interest,password,
+			phoneCode,name)
+		values (#{address},#{email},
+			#{interest},#{password},
+			#{phoneCode},#{name}
+			)
+	</insert>
+     
+  
+</mapper>

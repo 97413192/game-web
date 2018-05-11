@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.InformationMapper" >
+	<!-- 创建消息 -->
+	<insert id="save" parameterType="com.game.business.model.Information">
+	  	INSERT INTO information(
+	  		message,category,createTime,modifyTime
+	  		)
+	  		VALUES
+	  		(
+	  		#{message},#{category},CURRENT_TIMESTAMP,CURRENT_TIMESTAMP
+	  		)
+  	</insert>
+	<!-- 查询所有消息记录 -->
+	<select id="selectAllInformation" resultType="com.game.business.model.Information">
+  		SELECT id,message,category,createTime,modifyTime FROM information_category
+  	</select>
+  	<!-- 通过id查询消息信息 -->
+  	<select id="selectById"  parameterType="Integer" resultType="com.game.business.model.Information">
+  		SELECT id,message,category,createTime,modifyTime FROM information WHERE id = #{id}
+  	</select>
+  	<!-- 修改消息内容,修改时间,类别 -->
+  	<update id="updateById"  parameterType="com.game.business.model.Information">
+  		UPDATE information SET message = #{message},category = #{category},modifyTime = CURRENT_TIMESTAMP WHERE id = #{id}
+  	</update>
+  	<!-- 通过id删除消息记录 -->
+  	<delete id="deleteById" parameterType="Integer">
+  		DELETE FROM information WHERE id = #{id}
+  	</delete>
+  	
+
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.game.mapper.ShareMapper" >
+ 
+  
+  
+  <!-- 查询所有分享奖励-->
+  <select id="findShare" resultType="com.game.business.model.Share">
+  	SELECT 
+  		*
+  	FROM 
+  		Share 
+  </select>
+  <select id="selectShare" parameterType="int" resultType="com.game.business.model.Share">
+  	SELECT 
+  		*
+  	FROM 
+  		Share 
+  		where id=#{gameId}
+  </select>
+  <update id="updateNumber" parameterType="com.game.business.model.Share">
+  		update Share set shareNumber = #{shareNumber}
+  		<if test="gameId != null">
+  			where id = #{gameId}
+  		</if>
+  </update>
+  
+  
+  
+</mapper>

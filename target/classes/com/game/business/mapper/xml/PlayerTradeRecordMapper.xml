@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.PlayerTradeRecordMapper" >
+	
+	<!-- 查询所有消息记录 -->
+	<select id="selectAllRecord" resultType="com.game.business.model.PlayerTradeRecode">
+  		SELECT id,tradeTime,remitAccount,remitCategory,gameId,tradeCategory,remitRoomCard,playerRoomCard,operateId FROM trade_record_player
+  	</select>
+	<!-- 保存消息记录 -->
+	 
+	<insert id="save" parameterType="com.game.business.model.PlayerTradeRecode">
+		INSERT INTO trade_record_player(
+  		remitAccount,remitCategory,gameId,tradeCategory,remitRoomCard,playerRoomCard,operateId
+  		)
+  		VALUES
+  		(
+  		#{remitAccount},#{remitCategory},#{gameId},#{tradeCategory},#{remitRoomCard},#{playerRoomCard},#{operateId}
+  		)
+	</insert>
+	
+	 
+</mapper>

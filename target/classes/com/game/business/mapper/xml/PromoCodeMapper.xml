@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.PromoCodeMapper" >
+	<!-- 通过gameId查询promoCode -->
+  	<select id="selectByGameId"  parameterType="Integer" resultType="com.game.business.model.PromoCode">
+  		SELECT id,account,roomCard,gameId,userID,bindingTime,modifyTime,pNickName,playerRoomCard,yb FROM promo_code WHERE gameId = #{gameId}
+  	</select>
+	<!-- 创建promoCode -->
+	<insert id="save" parameterType="com.game.business.model.PromoCode">
+	  	INSERT INTO promo_code(
+	  		account,roomCard,gameId,userID,bindingTime,modifyTime,pNickName,playerRoomCard,yb
+	  		)
+	  		VALUES
+	  		(
+	  		#{account},#{roomCard},#{gameId},#{userID},CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,#{pNickName},#{playerRoomCard},#{yb}
+	  		)
+  	</insert>
+
+
+	<!-- 查询所有绑定信息 -->
+  	<select id="selectAllBindedPlayers"   resultType="com.game.business.model.PromoCode">
+  		SELECT id,account,roomCard,gameId,userID,bindingTime,modifyTime,pNickName,playerRoomCard FROM promo_code order by id desc
+  	</select>
+	
+	<!-- 通过代理商名查询promoCode -->
+  	<select id="selectByAccount"  parameterType="String" resultType="com.game.business.model.PromoCode">
+  		SELECT id,account,roomCard,gameId,userID,bindingTime,modifyTime,pNickName,playerRoomCard FROM promo_code WHERE account = #{account} order by id desc
+  	</select>
+  	
+  	<!-- 通过代理商名查询promoCode -->
+  	<select id="selectByAccountAndBindState"  parameterType="String" resultType="com.game.business.model.PromoCode">
+  		SELECT id,account,roomCard,gameId,userID,bindingTime,modifyTime,pNickName,playerRoomCard FROM promo_code WHERE account = #{account} and yb = 0 order by id desc
+  	</select>
+  	
+  	<!-- 通过代理商ID查询promoCode -->
+  	<select id="selectByAccount1"  parameterType="Integer" resultType="com.game.business.model.PromoCode">
+  		SELECT id,account,roomCard,gameId,userID,bindingTime,modifyTime,pNickName,playerRoomCard FROM promo_code WHERE userID = #{account} order by id desc
+  	</select>
+
+	<!-- 通过代理商名修改promoCode -->
+  	<update id="update"  parameterType="com.game.business.model.PromoCode">
+  		UPDATE promo_code SET roomCard = #{roomCard},modifyTime = CURRENT_TIMESTAMP WHERE account = #{account}
+  	</update>
+  	
+  	<select id="findPlayerCountbyAgent" parameterType="String" resultType="int">
+  		SELECT count(account) FROM promo_code WHERE account = #{account}
+  	</select>
+  	
+  	<!-- 通过代理商名修改promoCode -->
+  	<update id="updateALL"  parameterType="com.game.business.model.PromoCode">
+  		UPDATE promo_code SET roomCard = #{roomCard},pNickName = #{pNickName},playerRoomCard = #{playerRoomCard} WHERE gameId = #{gameId}
+  	</update>
+  	
+  	<!-- 更新用户绑定状态`  -->
+  	<delete id="unbindPlayer" parameterType="com.game.business.model.PromoCode">
+  			update  promo_code
+  			<trim prefix="set" suffixOverrides=",">
+  				<if test="yb != null">
+  					 yb = #{yb}
+  				</if>
+  			</trim>
+  			 <if test="gameId != null">
+	  			 where gameId = #{gameId}
+	  			</if>
+	  			<if test="account != null">
+	  			and account = #{account}
+	  		</if>
+  	</delete>
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.game.mapper.recoreMapper" >
+	<!-- 玩家交易时间查询，根据条件查出信息 -->
+    <select id="findOrderByTime" parameterType="map" resultType="com.game.game.model.OrderRecord">
+  	  SELECT
+  		  id,uname,pdbid,pname,channel,recvmoney,orderUUID,orderID,payURL,ptid,
+  		  ordermoney,status,serverid,modifydate,scaleId,paydate,lv,device_type,
+  		  device_ios,device_net,device_yy,issid,totalTre
+  	  FROM
+  		  alipayorder
+  	  WHERE paydate between #{beginTime} and #{endTime}
+    </select>
+	
+	<!-- 查询所有订单记录 -->
+	<select id="findAllOrder" resultType="com.game.game.model.OrderRecord">
+  	  SELECT
+  		  id,uname,pdbid,pname,channel,recvmoney,orderUUID,orderID,payURL,ptid,
+  		  ordermoney,status,serverid,modifydate,scaleId,paydate,lv,device_type,
+  		  device_ios,device_net,device_yy,issid,totalTre
+  	  FROM alipayorder
+    </select>
+
+
+</mapper>

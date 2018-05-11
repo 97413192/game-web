@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.MgerMapper" >
+
+  <!-- 注册管理员 -->
+  <insert id="mgerSave" parameterType="com.game.business.model.manager.Manager">
+  	INSERT INTO manager(
+  		name,password,power,ip,lastLoginIp,system,time
+  		)
+  		VALUES
+  		(
+  		#{name},#{password},#{power},#{ip},#{ip},#{system},#{time}
+  		)
+  </insert>
+  <!-- 通过名字查询管理员 -->
+  <select id="findByName" parameterType="String" resultType="com.game.business.model.manager.Manager">
+  	SELECT id,name,password,power,ip,system,time,lastLoginTime,lastLoginIp,modifyTime,onlineTime,heapOnlineTime,mark,category,status,loginTimes FROM manager WHERE name = #{name}
+  </select>
+  <!-- 修改密码 -->
+  <update id="aditPwd" parameterType="com.game.business.model.manager.Manager" >
+  	UPDATE manager SET password = #{password} WHERE name = #{name}
+  </update>
+  <!-- 超级管理员修改管理员参数 -->
+  <update id="update" parameterType="com.game.business.model.manager.Manager">
+  	UPDATE manager SET name=#{name},password=#{password},power=#{power},onlineTime=#{onlineTime},heapOnlineTime=#{heapOnlineTime},status=#{status} WHERE id=#{id}
+  </update>
+  <!-- 通过名字删除管理员 -->
+  <delete id="deleteByName" parameterType="String">
+  	DELETE FROM manager WHERE name = #{name}
+  </delete>
+  <!-- 查询所有管理员 -->
+  <select id="selectAllManager" resultType="com.game.business.model.manager.Manager">
+  	SELECT id,name,password,power,ip,system,time,lastLoginTime,lastLoginIp,modifyTime,onlineTime,heapOnlineTime,mark,category,status,loginTimes FROM manager order by time desc
+  </select>
+  <!-- 通过名字修改最后一次登录时间,最后一次登录ip,登录次数 -->
+  <update id="updateByName" parameterType="com.game.business.model.manager.Manager">
+  	UPDATE manager SET lastLoginTime=CURRENT_TIMESTAMP,lastLoginIp=#{lastLoginIp},loginTimes=#{loginTimes} WHERE name=#{name}
+  </update>
+  <!-- 超级管理员修改管理员参数 -->
+  <update id="updateAndStatus" parameterType="com.game.business.model.manager.Manager">
+  	UPDATE manager SET name=#{name},password=#{password},modifyTime=CURRENT_TIMESTAMP,status=#{status} WHERE id=#{id}
+  </update>
+  
+  
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+

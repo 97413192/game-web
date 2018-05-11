@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.LogMapper" >
+  
+  <!-- 管理登陆日志保存 -->
+  <insert id="logSave" parameterType="com.game.business.model.manager.ManagerLog">
+  	INSERT INTO log(
+  		name,ip,system,time,status,dsc
+  		) 
+  		VALUES
+  		(
+  		#{name},#{ip},#{system},#{time},#{status},#{dsc}
+  		)
+  </insert>
+   <!-- 查询所有系统日志,比通过时间降序排列 -->
+  <select id="findLogByName" resultType="com.game.business.model.manager.ManagerLog">
+  	SELECT id,name,ip,system,time,status,dsc FROM log order by time desc
+  </select>
+  <!-- 根据条件查询系统日志 -->
+  <select id="selectLogByCondition" parameterType="map" resultType="com.game.business.model.manager.ManagerLog">
+  	SELECT
+  		id,name,ip,system,time,status,dsc
+  	FROM
+  		log
+  	<where>
+  		<if test="name!=null and name!=''">
+  			and name=#{name}
+  		</if>
+  		<if test="startDate!=null and startDate!=''">
+  			and time&gt;=#{startDate}
+  		</if>
+  		<if test="endDate!=null and endDate!=''">
+  			and time&lt;=#{endDate}
+  		</if>
+  		<if test="ip!=null and ip!=''">
+  			and ip like concat('%',#{ip},'%')
+  		</if>
+  	</where>
+  	order by time desc
+  </select>
+  <!-- 根据日期删除系统日志 -->
+  <delete id="clearLogByDate" parameterType="map">
+  	delete from log
+  	<where>
+  		<if test="startDate!=null and startDate!=''">
+  			and time&gt;=#{startDate}
+  		</if>
+  		<if test="endDate!=null and endDate!=''">
+  			and time&lt;=#{endDate}
+  		</if>
+  	</where>
+  </delete>
+</mapper>

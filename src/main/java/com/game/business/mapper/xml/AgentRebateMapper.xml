@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.AgentRebateMapper" >
+
+  	<select id="selectAll" resultType="com.game.business.model.AgentRebate">
+  		SELECT id,grade,rebate FROM agent_rebate;
+  	</select>
+
+  	<update id="update"  parameterType="com.game.business.model.AgentRebate">
+  		UPDATE agent_rebate SET rebate=#{rebate} where grade=#{grade};
+  	</update>
+
+	<select id="selectOne" resultType="com.game.business.model.AgentRebate">
+		select * FROM agent_rebate where grade=#{param1};
+	</select>
+  	
+</mapper>

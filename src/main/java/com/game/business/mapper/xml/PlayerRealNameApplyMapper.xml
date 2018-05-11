@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.PlayerRealNameApplyMapper" >
+
+
+	<resultMap type="com.game.game.model.Player" id="player">
+			<id property="id" column="id" />
+	        <result property="pName" column="pnickName" />
+	        <result property="gameId" column="gameId" />
+	        <association property="realNameInfo" javaType="com.game.business.model.player.RealNameInfo">
+	        	<result property="realName" column="realName" />
+	        	<result property="idCard" column="idCard" />
+	        	<result property="phoneNumber" column="phoneNumber" />
+	        	<result property="applyTime" column="applyTime" />
+	        	<result property="applyState" column="applyState" />
+	        	<result property="approveTime" column="approveTime" />
+	        </association>
+	</resultMap>
+	
+	<!-- 查询所有实名玩家 -->
+	<select id="getAllRealNameApply" parameterType="Integer" resultMap="player">
+  		SELECT pnickName,gameId,realName,idCard,phoneNumber,applyTime,applyState,approveTime 
+  		FROM realname where applyState = #{applyState};
+  	</select>
+  	
+  	
+	<!-- 保存实名申请记录 -->
+	<insert id="insertRealNameApply" parameterType="com.game.game.model.Player">
+		INSERT INTO realname(
+  		pnickName,gameId,realName,idCard,phoneNumber,applyTime,applyState,approveTime
+  		)
+  		VALUES
+  		(
+  		#{pName},#{gameId},#{realNameInfo.realName},#{realNameInfo.idCard},#{realNameInfo.phoneNumber},
+  		#{realNameInfo.applyTime},#{realNameInfo.applyState},#{realNameInfo.approveTime}
+  		)
+	</insert>
+	
+	<select id="getSinglePlayer" parameterType="Integer" resultMap="player">
+	
+		select * from realName where gameId = #{gameId} 
+	
+	</select>
+	
+	<update id="updateApplyState" parameterType="com.game.game.model.Player">
+		
+		update realName 
+		<trim prefix="set" suffixOverrides=",">
+			applyTime = #{realNameInfo.applyTime},applyState = #{realNameInfo.applyState},realName = #{realNameInfo.realName},phoneNumber = #{realNameInfo.phoneNumber}
+			<if test="realNameInfo.approveTime != null">
+				,approveTime = #{realNameInfo.approveTime}
+			</if>
+			<if test="gameId != null">
+				where gameId = #{gameId}
+			</if>
+		</trim>
+	</update>
+	
+	<select id="getAllApplyRecords" resultMap="player">
+		select * from realName
+	</select>
+	 
+</mapper>

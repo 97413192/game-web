@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.PlayerShareInfoMapper" >
+ 
+  
+  
+  <!-- 查询所有分享奖励-->
+  <select id="findShare" resultType="com.game.business.model.Share">
+  	SELECT 
+  		*
+  	FROM 
+  		Share 
+  </select>
+  <select id="selectShare" parameterType="int" resultType="com.game.business.model.Share">
+  	SELECT 
+  		*
+  	FROM 
+  		Share 
+  		where gameId = #{gameId}
+  </select>
+  <update id="updateNumber" parameterType="com.game.business.model.Share">
+  		update Share set shareNumber = #{shareNumber},shareTime = #{shareTime}
+  		<if test="gameId != null">
+  			where gameId = #{gameId}
+  		</if>
+  </update>
+  
+  <insert id="insertShare" parameterType="com.game.business.model.Share"       				  
+        useGeneratedKeys="true" keyProperty="id">											
+  insert into share (gameId,shareType,number,numberType,rewardNumber,receiveCD,shareNumber,shareTime)
+   values (#{gameId},#{shareType},#{number},#{numberType},#{rewardNumber},#{receiveCD},#{shareNumber},#{shareTime})
+  </insert>
+  
+  <delete id="removeShareRecord">
+  		delete from share
+  </delete>
+  
+  
+</mapper>

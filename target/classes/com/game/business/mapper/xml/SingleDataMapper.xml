@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.game.business.mapper.SingleDataMapper" >
+	<!-- 创建promoCode -->
+	<insert id="save" parameterType="Integer">
+	  	
+  	</insert>
+
+
+	<!-- 查询所有绑定信息 -->
+  	<select id="selectBy"  parameterType="Integer" resultType="Integer">
+  		SELECT num FROM single_data where type=#{type};
+  	</select>
+	
+	<!-- 查询配置数量信息 -->
+  	<select id="selectById"  parameterType="Integer" resultType="Integer">
+  		SELECT num FROM single_data where id=#{i};
+  	</select>
+
+	<!-- 通过代理商名修改promoCode -->
+  	<update id="update"  parameterType="Map">
+  		UPDATE single_data SET num=#{num} where type=#{type};
+  	</update>
+	
+	<!-- 修改配置数量 -->
+  	<update id="updateNum"  parameterType="Integer">
+  		UPDATE single_data SET num=#{num} where id=1;
+  	</update>
+	
+</mapper>
